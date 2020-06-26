@@ -1,10 +1,12 @@
 import React, { useRef, useCallback } from 'react';
+import * as Yup from 'yup';
 
 import { FiCheckSquare } from 'react-icons/fi';
 import { FormHandles } from '@unform/core';
 import { Form } from './styles';
 import Modal from '../Modal';
 import Input from '../Input';
+import getValidationErrors from '../../utils/getValidationErrors';
 
 interface IFoodPlate {
   id: number;
@@ -37,8 +39,26 @@ const ModalAddFood: React.FC<IModalProps> = ({
 
   const handleSubmit = useCallback(
     async (data: ICreateFoodData) => {
-      handleAddFood(data);
-      setIsOpen();
+      try {
+        formRef.current?.setErrors({});
+        const schema = Yup.object().shape({
+          image: Yup.string().required('Campo obrigatório'),
+          name: Yup.string().required('Campo obrigatório'),
+          price: Yup.string().required('Campo obrigatório'),
+          description: Yup.string().required('Campo obrigatório'),
+        });
+
+        await schema.validate(data, {
+          abortEarly: false,
+        });
+        handleAddFood(data);
+        setIsOpen();
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
+          formRef.current?.setErrors(errors);
+        }
+      }
     },
     [handleAddFood, setIsOpen],
   );
