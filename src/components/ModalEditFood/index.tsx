@@ -1,10 +1,13 @@
 import React, { useRef, useCallback } from 'react';
+import * as Yup from 'yup';
 
 import { FiCheckSquare } from 'react-icons/fi';
+import { FaMoneyBillAlt, FaImage, FaPen, FaUtensils } from 'react-icons/fa';
 import { FormHandles } from '@unform/core';
 import { Form } from './styles';
 import Modal from '../Modal';
 import Input from '../Input';
+import getValidationErrors from '../../utils/getValidationErrors';
 
 interface IFoodPlate {
   id: number;
@@ -39,10 +42,27 @@ const ModalEditFood: React.FC<IModalProps> = ({
 
   const handleSubmit = useCallback(
     async (data: IEditFoodData) => {
-      const { id, available } = editingFood;
-      Object.assign(data, { id, available });
-      handleUpdateFood(data);
-      setIsOpen();
+      try {
+        formRef.current?.setErrors({});
+        const schema = Yup.object().shape({
+          image: Yup.string().required('Campo obrigatório'),
+          name: Yup.string().required('Campo obrigatório'),
+          price: Yup.string().required('Campo obrigatório'),
+          description: Yup.string().required('Campo obrigatório'),
+        });
+
+        await schema.validate(data, {
+          abortEarly: false,
+        });
+
+        handleUpdateFood(data);
+        setIsOpen();
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
+          formRef.current?.setErrors(errors);
+        }
+      }
     },
     [handleUpdateFood, setIsOpen],
   );
@@ -51,12 +71,12 @@ const ModalEditFood: React.FC<IModalProps> = ({
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
       <Form ref={formRef} onSubmit={handleSubmit} initialData={editingFood}>
         <h1>Editar Prato</h1>
-        <Input name="image" placeholder="Cole o link aqui" />
+        <Input name="image" placeholder="Cole o link aqui" icon={FaImage} />
 
-        <Input name="name" placeholder="Ex: Moda Italiana" />
-        <Input name="price" placeholder="Ex: 19.90" />
+        <Input name="name" placeholder="Ex: Moda Italiana" icon={FaUtensils} />
+        <Input name="price" placeholder="Ex: 19.90" icon={FaMoneyBillAlt} />
 
-        <Input name="description" placeholder="Descrição" />
+        <Input name="description" placeholder="Descrição" icon={FaPen} />
 
         <button type="submit" data-testid="edit-food-button">
           <div className="text">Editar Prato</div>

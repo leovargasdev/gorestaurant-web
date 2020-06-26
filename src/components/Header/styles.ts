@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { shade } from 'polished';
 
 export const Container = styled.div`
   background: #c72828;
@@ -18,7 +19,7 @@ export const Container = styled.div`
           font-weight: 600;
           border-radius: 8px;
           border: 0;
-          background: #39b100;
+          background: #083d77;
           color: #fff;
 
           display: flex;
@@ -32,7 +33,7 @@ export const Container = styled.div`
           .icon {
             display: flex;
             padding: 16px 16px;
-            background: #41c900;
+            background: ${shade(0.1, '#083d77')};
             border-radius: 0 8px 8px 0;
             margin: 0 auto;
           }

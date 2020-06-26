@@ -2,6 +2,7 @@ import React, { useRef, useCallback } from 'react';
 import * as Yup from 'yup';
 
 import { FiCheckSquare } from 'react-icons/fi';
+import { FaMoneyBillAlt, FaImage, FaPen, FaUtensils } from 'react-icons/fa';
 import { FormHandles } from '@unform/core';
 import { Form } from './styles';
 import Modal from '../Modal';
@@ -67,12 +68,16 @@ const ModalAddFood: React.FC<IModalProps> = ({
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
       <Form ref={formRef} onSubmit={handleSubmit}>
         <h1>Novo Prato</h1>
-        <Input name="image" placeholder="Cole o link aqui" />
+        <Input name="image" placeholder="Cole o link aqui" icon={FaImage} />
 
-        <Input name="name" placeholder="Ex: Moda Italiana" />
-        <Input name="price" placeholder="Ex: 19.90" />
+        <Input name="name" placeholder="Ex: Moda Italiana" icon={FaUtensils} />
+        <Input name="price" placeholder="Ex: 19.90" icon={FaMoneyBillAlt} />
 
-        <Input name="description" placeholder="Descrição" />
+        <Input
+          name="description"
+          placeholder="Descrição do prato"
+          icon={FaPen}
+        />
         <button type="submit" data-testid="add-food-button">
           <p className="text">Adicionar Prato</p>
           <div className="icon">

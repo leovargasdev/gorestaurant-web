@@ -5,6 +5,7 @@ import Tooltip from '../Tooltip';
 interface IContainerProps {
   isFocused: boolean;
   isFilled: boolean;
+  isErrored: boolean;
 }
 
 export const Container = styled.div<IContainerProps>`
@@ -12,6 +13,7 @@ export const Container = styled.div<IContainerProps>`
   align-items: center;
 
   background: #fff;
+  border: 2px solid #fff;
   border-radius: 8px;
   padding: 18px 24px;
   width: 100%;
@@ -33,6 +35,12 @@ export const Container = styled.div<IContainerProps>`
     css`
       color: #ff9000;
       border-color: #ff9000;
+    `}
+
+  ${props =>
+    props.isErrored &&
+    css`
+      border-color: #c53030;
     `}
 
   ${props =>
