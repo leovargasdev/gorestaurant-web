@@ -38,17 +38,14 @@ const Dashboard: React.FC = () => {
     food: Omit<IFoodPlate, 'id' | 'available'>,
   ): Promise<void> {
     try {
-      const { image, name, price, description } = food;
-      const formData = {
+      const foodData = {
         id: Number(foods.length + 1),
         available: true,
-        image,
-        name,
-        price,
-        description,
+        ...food,
       };
+      const response = await api.post('foods', foodData);
 
-      setFoods([...foods, formData]);
+      setFoods([...foods, response.data]);
     } catch (err) {
       console.log(err);
     }
@@ -57,15 +54,18 @@ const Dashboard: React.FC = () => {
   async function handleUpdateFood(
     food: Omit<IFoodPlate, 'id' | 'available'>,
   ): Promise<void> {
-    const { name, image, price, description } = food;
-    if (food.id) {
-      const foodIndex = foods.findIndex(f => f.id === food.id);
-      console.log(foodIndex);
-    }
+    const { id, available } = editingFood;
+    Object.assign(food, { id, available });
+    const response = await api.put(`/foods/${editingFood.id}`, food);
+
+    const foodsList = foods.filter(f => f.id !== id);
+    setFoods([...foodsList, response.data]);
   }
 
   async function handleDeleteFood(id: number): Promise<void> {
-    // TODO DELETE A FOOD PLATE FROM THE API
+    await api.delete(`/foods/${id}`);
+    const foodsList = foods.filter(f => f.id !== id);
+    setFoods(foodsList);
   }
 
   function toggleModal(): void {
